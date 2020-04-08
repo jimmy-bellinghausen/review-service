@@ -10,11 +10,20 @@ import java.util.Objects;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-    String userEmail;
-    String title;
-    STARRATING starRating;
-    String imdbId;
+    private long id;
+    private String userEmail;
+    private String title;
+    private STARRATING starRating;
+    private String imdbId;
+    private String text;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
     public Review() {
     }
@@ -85,7 +94,13 @@ public class Review {
         return Objects.hash(getUserEmail(), getTitle(), getStarRating(), getImdbId());
     }
 
-    static enum STARRATING{
+    public void update(Review that) {
+        if(that.getTitle()!=null)this.setTitle(that.getTitle());
+        if(that.getText()!=null)this.setText(that.getText());
+        if(that.getStarRating()!=null)this.setStarRating(that.getStarRating());
+    }
+
+    public static enum STARRATING{
         ONE,TWO,THREE,FOUR,FIVE
     }
 }

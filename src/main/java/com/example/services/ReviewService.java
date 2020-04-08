@@ -29,4 +29,12 @@ public class ReviewService {
     public List<Review> getAllByMovieId(String imdbId) {
         return repository.findAllByImdbId(imdbId);
     }
+
+    public Review updateReview(long id, Review expectedReview2) {
+        Review reviewToUpdate = repository.findById(id).orElse(null);
+        if(reviewToUpdate==null){ return null; }
+        if(!reviewToUpdate.getUserEmail().equals(expectedReview2.getUserEmail())){ return null; }
+        reviewToUpdate.update(expectedReview2);
+        return repository.save(reviewToUpdate);
+    }
 }

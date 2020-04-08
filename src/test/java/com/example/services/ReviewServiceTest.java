@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -27,12 +28,14 @@ public class ReviewServiceTest {
     Review expectedReview;
     Review expectedReview2;
     List<Review> reviewList;
+    ReviewService service;
 
     @BeforeEach
     public void setExpecteds(){
         expectedReview = new Review();
         expectedReview2 = new Review();
         reviewList = new ArrayList<>();
+        service = new ReviewService(repository);
     }
 
     //    Post a new review for a user - Users are allowed to post 1 review per movie. The movie id must be validated using the movie service. Each review should have the following attributes...
@@ -48,8 +51,6 @@ public class ReviewServiceTest {
 
     @Test
     public void postReview(){
-        ReviewService service = new ReviewService(repository);
-
         expectedReview.setUserEmail("AnEmail@email.com");
         expectedReview.setImdbId("A valid id");
         when(repository.findAllImdbIdByUserEmail(anyString())).thenReturn(Collections.EMPTY_LIST);
@@ -64,7 +65,6 @@ public class ReviewServiceTest {
 
     @Test
     public void getAllReviewsByEmail(){
-        ReviewService service = new ReviewService(repository);
         reviewList.add(expectedReview);
         reviewList.add(expectedReview2);
         expectedReview.setUserEmail("TheEmail@email.com");
@@ -79,7 +79,6 @@ public class ReviewServiceTest {
 
     @Test
     public void getAllReviewsByMovieId(){
-        ReviewService service = new ReviewService(repository);
         reviewList.add(expectedReview);
         reviewList.add(expectedReview2);
         expectedReview.setUserEmail("TheEmail@email.com");
@@ -90,5 +89,26 @@ public class ReviewServiceTest {
         expectedReview2.setId(2L);
         when(repository.findAllByImdbId(anyString())).thenReturn(reviewList);
         assertEquals(reviewList, service.getAllByMovieId(expectedReview.getImdbId()));
+    }
+
+    @Test
+    public void updateReview(){
+        expectedReview.setUserEmail("TheEmail@email.com");
+        expectedReview.setId(1L);
+        expectedReview2.setTitle("New Title");
+        expectedReview2.setText("New Text");
+        expectedReview2.setStarRating(Review.STARRATING.FIVE);
+        expectedReview2.setUserEmail(expectedReview.getUserEmail());
+        expectedReview2.setId(expectedReview.getId());
+        when(repository.findById(anyLong())).thenReturn(Optional.of(expectedReview));
+        when(repository.save(any(Review.class))).thenAnswer(input->input.getArguments()[0]);
+        assertEquals(expectedReview2, service.updateReview(expectedReview.getId(), expectedReview2));
+        reset(repository);
+        when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
+        assertEquals(null, service.updateReview(expectedReview.getId(), expectedReview2));
+        expectedReview2.setUserEmail("Definitely not the same email.");
+        reset(repository);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(expectedReview));
+        assertEquals(null, service.updateReview(expectedReview.getId(), expectedReview2));
     }
 }
