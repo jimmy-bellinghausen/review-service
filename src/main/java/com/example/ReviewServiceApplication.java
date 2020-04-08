@@ -2,6 +2,8 @@ package com.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class ReviewServiceApplication {
@@ -10,4 +12,7 @@ public class ReviewServiceApplication {
         SpringApplication.run(ReviewServiceApplication.class, args);
     }
 
+    public RestTemplate restTemplate(RestTemplateBuilder builder){
+        return builder.build();
+    }
 }
