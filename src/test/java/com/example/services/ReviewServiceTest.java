@@ -100,14 +100,17 @@ public class ReviewServiceTest {
         expectedReview2.setStarRating(Review.STARRATING.FIVE);
         expectedReview2.setUserEmail(expectedReview.getUserEmail());
         expectedReview2.setId(expectedReview.getId());
+        when(repository.existsById(anyLong())).thenReturn(true);
         when(repository.findById(anyLong())).thenReturn(Optional.of(expectedReview));
         when(repository.save(any(Review.class))).thenAnswer(input->input.getArguments()[0]);
         assertEquals(expectedReview2, service.updateReview(expectedReview.getId(), expectedReview2));
         reset(repository);
+        when(repository.existsById(anyLong())).thenReturn(false);
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
         assertEquals(null, service.updateReview(expectedReview.getId(), expectedReview2));
         expectedReview2.setUserEmail("Definitely not the same email.");
         reset(repository);
+        when(repository.existsById(anyLong())).thenReturn(true);
         when(repository.findById(anyLong())).thenReturn(Optional.of(expectedReview));
         assertEquals(null, service.updateReview(expectedReview.getId(), expectedReview2));
     }

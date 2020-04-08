@@ -31,8 +31,8 @@ public class ReviewService {
     }
 
     public Review updateReview(long id, Review expectedReview2) {
-        Review reviewToUpdate = repository.findById(id).orElse(null);
-        if(reviewToUpdate==null){ return null; }
+        if(!repository.existsById(id)) { return null; }
+        Review reviewToUpdate = repository.findById(id).get();
         if(!reviewToUpdate.getUserEmail().equals(expectedReview2.getUserEmail())){ return null; }
         reviewToUpdate.update(expectedReview2);
         return repository.save(reviewToUpdate);
