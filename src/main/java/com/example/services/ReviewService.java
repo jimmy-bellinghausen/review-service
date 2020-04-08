@@ -23,6 +23,6 @@ public class ReviewService {
     }
 
     public List<Review> getAllByUserEmail(String userEmail) {
-        return null;
+        return repository.findAllByUserEmail(userEmail);
     }
 }
