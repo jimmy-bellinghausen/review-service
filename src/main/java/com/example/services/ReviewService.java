@@ -14,7 +14,7 @@ public class ReviewService {
 
 
     public Review postReview(Review reviewToBeSaved) {
-        if(!repository.existsById(reviewToBeSaved.getImdbId())){
+        if(!repository.findAllImdbIdByUserEmail(reviewToBeSaved.getUserEmail()).contains(reviewToBeSaved.getImdbId())){
             return repository.save(reviewToBeSaved);
         }
         return null;

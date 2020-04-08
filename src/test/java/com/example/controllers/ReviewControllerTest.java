@@ -33,13 +33,13 @@ public class ReviewControllerTest {
 //    Post a new review for a user - Users are allowed to post 1 review per movie. The movie id must be validated using the movie service. Each review should have the following attributes...
 //          User's email address
 //          Review Title
-//           Star Rating (1 - 5)
-//           imdbId of the movie being reviewed
+//          Star Rating (1 - 5)
+//          imdbId of the movie being reviewed
 //          Review Text
 //    Retrieve all reviews for a user. Include the movie title in the response, as well as a link to the movie details (served by the movie service)
 //    Retrieve all reviews for a movie (imdb id) - response should include the movie title, and a link to the movie details (served by the movie service)
 //    Update a review's title, text, star rating. Validate the user's email address on the post with the review being updated.
-//    Delete a review. User's email on the request MUST match the review being deleted.
+//    Delete a review. User's email on the request MUST match the review being deleted.`
 
     @Test
     public void postReview() throws Exception{

@@ -1,21 +1,30 @@
 package com.example.entities;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.metamodel.model.domain.IdentifiableDomainType;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class Review {
     @Id
-    @Column(unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    long id;
     String userEmail;
     String title;
     STARRATING starRating;
     String imdbId;
 
     public Review() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getUserEmail() {
