@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<String> findAllImdbIdByUserEmail(String userEmail);
+    List<Review> findAllByUserEmail(String userEmail);
 }
