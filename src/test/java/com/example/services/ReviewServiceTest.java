@@ -76,4 +76,19 @@ public class ReviewServiceTest {
         when(repository.findAllByUserEmail(anyString())).thenReturn(reviewList);
         assertEquals(reviewList, service.getAllByUserEmail(expectedReview.getUserEmail()));
     }
+
+    @Test
+    public void getAllReviewsByMovieId(){
+        ReviewService service = new ReviewService(repository);
+        reviewList.add(expectedReview);
+        reviewList.add(expectedReview2);
+        expectedReview.setUserEmail("TheEmail@email.com");
+        expectedReview.setImdbId("The Id");
+        expectedReview2.setUserEmail("AnotherEmail@notEmail.com");
+        expectedReview2.setImdbId(expectedReview.getImdbId());
+        expectedReview.setId(1L);
+        expectedReview2.setId(2L);
+        when(repository.findAllByImdbId(anyString())).thenReturn(reviewList);
+        assertEquals(reviewList, service.getAllByMovieId(expectedReview.getImdbId()));
+    }
 }

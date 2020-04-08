@@ -25,4 +25,8 @@ public class ReviewService {
     public List<Review> getAllByUserEmail(String userEmail) {
         return repository.findAllByUserEmail(userEmail);
     }
+
+    public List<Review> getAllByMovieId(String imdbId) {
+        return repository.findAllByImdbId(imdbId);
+    }
 }
