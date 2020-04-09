@@ -56,5 +56,10 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$").value(expected));
     }
 
+    @Test
+    public void getReview() throws Exception{
+        Review expected = new Review();
+    }
+
 
 }
