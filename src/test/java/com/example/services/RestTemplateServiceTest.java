@@ -40,8 +40,17 @@ class RestTemplateServiceTest {
     void validateMovie() {
         String imdbId = "testId";
         MovieModel returnModel = new MovieModel();
-        returnModel.setActors("Actor1, Actor2");
+        returnModel.setTitle("SetTitle");
         when(restTemplate.getForEntity(anyString(), any(Class.class))).thenReturn(ResponseEntity.ok(returnModel));
         assertTrue(service.validate(imdbId));
+    }
+
+    @Test
+    void getMovieInfo() {
+        String imdbId = "testStr";
+        MovieModel expectedModel = new MovieModel();
+        expectedModel.setTitle("NewTitle");
+        when(restTemplate.getForEntity(anyString(), any(Class.class))).thenReturn(ResponseEntity.ok(expectedModel));
+        assertNotNull(service.getMovieInfo(imdbId));
     }
 }

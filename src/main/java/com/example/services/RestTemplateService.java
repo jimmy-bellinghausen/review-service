@@ -19,4 +19,8 @@ public class RestTemplateService {
         boolean valid = returnValue.getBody() != null;
         return valid;
     }
+
+    public MovieModel getMovieInfo(String imdbId) {
+        return restTemplate.getForEntity("/api/movie" +imdbId, MovieModel.class).getBody();
+    }
 }
