@@ -105,17 +105,25 @@ public class ReviewServiceTest {
         when(repository.save(any(Review.class))).thenAnswer(input->input.getArguments()[0]);
         assertEquals(expectedReview2, service.updateReview(expectedReview.getId(), expectedReview2, expectedReview.getUserEmail()));
         expectedReview2.setUserEmail("Definitely not the same email.");
-        reset(repository);
-        when(repository.existsById(anyLong())).thenReturn(true);
-        when(repository.findById(anyLong())).thenReturn(Optional.of(expectedReview));
-        assertEquals(null, service.updateReview(expectedReview.getId(), expectedReview2, expectedReview2.getUserEmail()));
     }
 
     @Test
     public void updateNonExistantReview(){
+        expectedReview.setId(1L);
+        expectedReview2.setUserEmail("test");
         when(repository.existsById(anyLong())).thenReturn(false);
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
         assertEquals(null, service.updateReview(expectedReview.getId(), expectedReview2, expectedReview.getUserEmail()));
+    }
+
+    @Test
+    void updateIncorrectEmail() {
+        expectedReview.setId(1L);
+        expectedReview.setUserEmail("anEmail");
+        expectedReview2.setUserEmail("aNewEmail");
+        when(repository.existsById(anyLong())).thenReturn(true);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(expectedReview));
+        assertEquals(null, service.updateReview(expectedReview.getId(), expectedReview2, expectedReview2.getUserEmail()));
     }
 
     @Test

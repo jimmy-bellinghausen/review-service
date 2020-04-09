@@ -30,11 +30,11 @@ public class ReviewService {
         return repository.findAllByImdbId(imdbId);
     }
 
-    public Review updateReview(long id, Review expectedReview2) {
+    public Review updateReview(long id, Review newValues, String userEmail) {
         if(!repository.existsById(id)) { return null; }
         Review reviewToUpdate = repository.findById(id).get();
-        if(!reviewToUpdate.getUserEmail().equals(expectedReview2.getUserEmail())){ return null; }
-        reviewToUpdate.update(expectedReview2);
+        if(!reviewToUpdate.getUserEmail().equals(userEmail)){ return null; }
+        reviewToUpdate.update(newValues);
         return repository.save(reviewToUpdate);
     }
 }
