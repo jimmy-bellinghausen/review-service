@@ -49,6 +49,7 @@ public class ReviewControllerTest {
         expected.setUserEmail("AnEmail@email.com");
         expected.setImdbId("tt3896198");
         String json = mapper.writeValueAsString(expected);
+        when(restTemplateService.validate(anyString())).thenReturn(true);
         when(reviewService.postReview(any(Review.class))).thenReturn(expected);
         mvc.perform(post("/api/review").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
