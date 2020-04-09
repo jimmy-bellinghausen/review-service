@@ -1,22 +1,19 @@
 package com.example.controllers;
 
-import com.example.entities.Review;
-import com.example.models.MovieModel;
+import com.example.services.RestTemplateService;
 import com.example.services.ReviewService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/api/review")
 public class ReviewController {
 
-    ReviewService service;
-    RestTemplate restTemplate;
+    ReviewService reviewService;
+    RestTemplateService restTemplateService;
 
-    public ReviewController(RestTemplate restTemplate, ReviewService service) {
-        this.service = service;
-        this.restTemplate = restTemplate;
+    public ReviewController(ReviewService service, RestTemplateService restTemplateService) {
+        this.reviewService = service;
+        this.restTemplateService = restTemplateService;
     }
 
 //    @PostMapping

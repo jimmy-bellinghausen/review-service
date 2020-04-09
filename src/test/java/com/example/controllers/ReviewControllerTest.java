@@ -1,6 +1,7 @@
 package com.example.controllers;
 
 import com.example.entities.Review;
+import com.example.services.RestTemplateService;
 import com.example.services.ReviewService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.awt.*;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -28,7 +27,10 @@ public class ReviewControllerTest {
     ObjectMapper mapper = new ObjectMapper();
 
     @MockBean
-    ReviewService service;
+    ReviewService reviewService;
+
+    @MockBean
+    RestTemplateService restTemplateService;
 
 //    Post a new review for a user - Users are allowed to post 1 review per movie. The movie id must be validated using the movie service. Each review should have the following attributes...
 //          User's email address
@@ -45,12 +47,9 @@ public class ReviewControllerTest {
     public void postReview() throws Exception{
         Review expected = new Review();
         expected.setUserEmail("AnEmail@email.com");
-        String json = mapper.writeValueAsString(expected);
-        mvc.perform(post("/api/review").content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
         expected.setImdbId("tt3896198");
-        json = mapper.writeValueAsString(expected);
-        when(service.postReview(any(Review.class))).thenReturn(expected);
+        String json = mapper.writeValueAsString(expected);
+        when(reviewService.postReview(any(Review.class))).thenReturn(expected);
         mvc.perform(post("/api/review").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(expected));
