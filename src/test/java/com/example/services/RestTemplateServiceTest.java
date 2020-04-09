@@ -39,9 +39,7 @@ class RestTemplateServiceTest {
     @Test
     void validateMovie() {
         String imdbId = "testId";
-        MovieModel returnModel = new MovieModel();
-        returnModel.setTitle("SetTitle");
-        when(restTemplate.getForEntity(anyString(), any(Class.class))).thenReturn(ResponseEntity.ok(returnModel));
+        when(restTemplate.getForObject(anyString(), any(Class.class))).thenReturn(true);
         assertTrue(service.validate(imdbId));
     }
 
@@ -50,7 +48,7 @@ class RestTemplateServiceTest {
         String imdbId = "testStr";
         MovieModel expectedModel = new MovieModel();
         expectedModel.setTitle("NewTitle");
-        when(restTemplate.getForEntity(anyString(), any(Class.class))).thenReturn(ResponseEntity.ok(expectedModel));
+        when(restTemplate.getForObject(anyString(), any(Class.class))).thenReturn(expectedModel);
         assertNotNull(service.getMovieInfo(imdbId));
     }
 }

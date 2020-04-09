@@ -15,12 +15,10 @@ public class RestTemplateService {
     }
 
     public boolean validate(String imdbId) {
-        ResponseEntity<MovieModel> returnValue = restTemplate.getForEntity("/api/movie" +imdbId, MovieModel.class);
-        boolean valid = returnValue.getBody() != null;
-        return valid;
+        return restTemplate.getForObject("/api/movie/exists/" +imdbId, Boolean.class);
     }
 
     public MovieModel getMovieInfo(String imdbId) {
-        return restTemplate.getForEntity("/api/movie" +imdbId, MovieModel.class).getBody();
+        return restTemplate.getForObject("/api/movie/" +imdbId, MovieModel.class);
     }
 }
