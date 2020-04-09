@@ -37,4 +37,14 @@ public class ReviewService {
         reviewToUpdate.update(newValues);
         return repository.save(reviewToUpdate);
     }
+
+    public boolean deleteReview(long id, String userEmail) {
+        if (!repository.existsById(id)) {
+            return false;
+        }
+        if(!userEmail.equals(repository.findById(id).get().getUserEmail())) {
+            return false;
+        }
+        return repository.deleteById(id) == 1;
+    }
 }

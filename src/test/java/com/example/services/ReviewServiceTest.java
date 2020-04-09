@@ -128,6 +128,12 @@ public class ReviewServiceTest {
 
     @Test
     public void deleteReview(){
-
+        expectedReview.setId(1L);
+        expectedReview.setUserEmail("anything");
+        when(repository.existsById(anyLong())).thenReturn(true);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(expectedReview));
+        when(repository.deleteById(anyLong())).thenReturn(1);
+        assertTrue(service.deleteReview(expectedReview.getId(), expectedReview.getUserEmail()));
     }
+
 }
