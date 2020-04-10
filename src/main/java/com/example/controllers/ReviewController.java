@@ -1,7 +1,12 @@
 package com.example.controllers;
 
+import com.example.entities.Review;
+import com.example.entities.ReviewMovieAndRating;
+import com.example.models.MovieModel;
+import com.example.services.MovieInfoService;
 import com.example.services.ValidationService;
 import com.example.services.ReviewService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,11 +14,19 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
 
     ReviewService reviewService;
-    ValidationService validationService;
+    MovieInfoService movieInfoService;
 
-    public ReviewController(ReviewService service, ValidationService validationService) {
+
+    public ReviewController(ReviewService service, MovieInfoService movieInfoService) {
         this.reviewService = service;
-        this.validationService = validationService;
+        this.movieInfoService = movieInfoService;
+    }
+
+    @PostMapping
+    ResponseEntity<ReviewMovieAndRating> reviewInfoDTOResponseEntity(@RequestBody Review review) {
+        Review reviewInfo = reviewService.postReview(review);
+        MovieModel movieModelInfo = movieInfoService.getMovieInfo(review.getImdbId());
+        return ResponseEntity.ok(reviewInfo);
     }
 
 }

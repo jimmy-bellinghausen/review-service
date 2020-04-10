@@ -1,5 +1,8 @@
 package com.example.controllers;
 
+import com.example.entities.Review;
+import com.example.models.MovieModel;
+import com.example.services.MovieInfoService;
 import com.example.services.ValidationService;
 import com.example.services.ReviewService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -23,7 +35,7 @@ public class ReviewControllerTest {
     ReviewService reviewService;
 
     @MockBean
-    ValidationService validationService;
+    MovieInfoService movieInfoService;
 
 //    Post a new review for a user - Users are allowed to post 1 review per movie. The movie id must be validated using the movie service. Each review should have the following attributes...
 //          User's email address
@@ -38,14 +50,34 @@ public class ReviewControllerTest {
 
 
     @Test
-    void postReview() {
-        //create a review
+    void postReview() throws Exception {
+        Review review = new Review();
+        review.setImdbId("foo");
+        review.setId(1l);
+        String jsonPost = mapper.writeValueAsString(review);
 
-        //review to post with id to validate.
-        //first validate id
-        //service call to restTemplate service
+        MovieModel movieModel = new MovieModel();
+        movieModel.setTitle("Jackeass 1");
 
-        //post review or get the movie details
+        when(reviewService.postReview(any(Review.class))).thenReturn(review);
+
+        when(movieInfoService.getMovieInfo(anyString())).thenReturn(movieModel);
+
+        mvc.perform(post("/api/review").content(jsonPost).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").doesNotExist())
+                .andExpect(jsonPath("$.imdbId").value(review.getImdbId()))
+                .andExpect(jsonPath("$.movieInfo").value(movieModel));
+
+
+        //create a review--
+
+        //review to post with id to validate.--
+        //first validate id--
+
+
+        //post review or get the movie details--
 
         //post review or get the movie details (the one you didn't do before)
 
