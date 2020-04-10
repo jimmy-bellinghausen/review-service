@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -30,12 +29,15 @@ public class ReviewServiceTest {
     List<Review> reviewList;
     ReviewService service;
 
+    @MockBean
+    ValidationService validationService;
+
     @BeforeEach
     public void setExpecteds(){
         expectedReview = new Review();
         expectedReview2 = new Review();
         reviewList = new ArrayList<>();
-        service = new ReviewService(repository);
+        service = new ReviewService(repository, validationService);
     }
 
     //    Post a new review for a user - Users are allowed to post 1 review per movie. The movie id must be validated using the movie service. Each review should have the following attributes...
@@ -55,12 +57,9 @@ public class ReviewServiceTest {
         expectedReview.setImdbId("A valid id");
         when(repository.findAllImdbIdByUserEmail(anyString())).thenReturn(Collections.EMPTY_LIST);
         when(repository.save(any(Review.class))).thenReturn(expectedReview);
+        when(validationService.validate(anyString())).thenReturn(true);
         assertEquals(expectedReview, service.postReview(expectedReview));
-        List<String> imdbIdList = new ArrayList<>();
-        imdbIdList.add(expectedReview.getImdbId());
-        reset(repository);
-        when(repository.findAllImdbIdByUserEmail(anyString())).thenReturn(imdbIdList);
-        assertNull(service.postReview(expectedReview));
+
     }
 
     @Test

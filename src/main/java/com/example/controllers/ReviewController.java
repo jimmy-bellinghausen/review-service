@@ -1,9 +1,7 @@
 package com.example.controllers;
 
-import com.example.entities.Review;
-import com.example.services.RestTemplateService;
+import com.example.services.ValidationService;
 import com.example.services.ReviewService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,18 +9,11 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
 
     ReviewService reviewService;
-    RestTemplateService restTemplateService;
+    ValidationService validationService;
 
-    public ReviewController(ReviewService service, RestTemplateService restTemplateService) {
+    public ReviewController(ReviewService service, ValidationService validationService) {
         this.reviewService = service;
-        this.restTemplateService = restTemplateService;
+        this.validationService = validationService;
     }
 
-    @PostMapping
-    public ResponseEntity<Review> postReview(@RequestBody Review reviewToPost){
-        if(restTemplateService.validate(reviewToPost.getImdbId())){
-            return ResponseEntity.ok(reviewService.postReview(reviewToPost));
-        }
-        return null;
-    }
 }

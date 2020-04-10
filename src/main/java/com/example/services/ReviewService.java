@@ -9,14 +9,17 @@ import java.util.List;
 @Service
 public class ReviewService {
     ReviewRepository repository;
+    ValidationService validationService;
 
-    public ReviewService(ReviewRepository repository) {
+    public ReviewService(ReviewRepository repository, ValidationService validationService) {
         this.repository = repository;
+        this.validationService = validationService;
     }
 
 
     public Review postReview(Review reviewToBeSaved) {
-        if(!repository.findAllImdbIdByUserEmail(reviewToBeSaved.getUserEmail()).contains(reviewToBeSaved.getImdbId())){
+        if(validationService.validate(reviewToBeSaved.getImdbId()) &&
+                !repository.findAllImdbIdByUserEmail(reviewToBeSaved.getUserEmail()).contains(reviewToBeSaved.getImdbId())){
             return repository.save(reviewToBeSaved);
         }
         return null;

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,16 +12,16 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class RestTemplateServiceTest {
+class ValidationServiceTest {
 
     @MockBean
     RestTemplate restTemplate;
 
-    RestTemplateService service;
+    ValidationService service;
 
     @BeforeEach
     private  void setup(){
-        service = new RestTemplateService(restTemplate);
+        service = new ValidationService(restTemplate);
     }
 
     //    Post a new review for a user - Users are allowed to post 1 review per movie. The movie id must be validated using the movie service. Each review should have the following attributes...
@@ -41,14 +40,5 @@ class RestTemplateServiceTest {
         String imdbId = "testId";
         when(restTemplate.getForObject(anyString(), any(Class.class))).thenReturn(true);
         assertTrue(service.validate(imdbId));
-    }
-
-    @Test
-    void getMovieInfo() {
-        String imdbId = "testStr";
-        MovieModel expectedModel = new MovieModel();
-        expectedModel.setTitle("NewTitle");
-        when(restTemplate.getForObject(anyString(), any(Class.class))).thenReturn(expectedModel);
-        assertNotNull(service.getMovieInfo(imdbId));
     }
 }
