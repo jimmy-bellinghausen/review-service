@@ -2,7 +2,6 @@ package com.example.services;
 
 import com.example.models.MovieModel;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.client.RestTemplate;
@@ -31,6 +30,7 @@ public class MovieInfoServiceTest {
         String imdbId = "testStr";
         MovieModel expectedModel = new MovieModel();
         expectedModel.setTitle("NewTitle");
+
         when(restTemplate.getForObject(anyString(), any(Class.class))).thenReturn(expectedModel);
         assertNotNull(movieInfoService.getMovieInfo(imdbId));
     }

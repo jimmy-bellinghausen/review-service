@@ -18,9 +18,17 @@ public class ReviewService {
 
 
     public Review postReview(Review reviewToBeSaved) {
-        if(validationService.validate(reviewToBeSaved.getImdbId()) &&
-                !repository.findAllImdbIdByUserEmail(reviewToBeSaved.getUserEmail()).contains(reviewToBeSaved.getImdbId())){
-            return repository.save(reviewToBeSaved);
+        if(validationService.validate(reviewToBeSaved.getImdbId())){
+            List<Review> reviews = repository.findAllByUserEmail(reviewToBeSaved.getUserEmail());
+            boolean containsImdbId = false;
+            for(Review review : reviews){
+                if(review.getImdbId().equals(reviewToBeSaved.getImdbId())){
+                    containsImdbId = true;
+                }
+            }
+            if(containsImdbId) {
+                return repository.save(reviewToBeSaved);
+            }
         }
         return null;
     }

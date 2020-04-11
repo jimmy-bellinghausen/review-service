@@ -1,6 +1,7 @@
 package com.example.services;
 
 import com.example.models.MovieModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -9,10 +10,8 @@ public class MovieInfoService {
 
     RestTemplate restTemplate;
     ValidationService validationService;
-
-    public MovieInfoService() {
-
-    }
+    @Value("${MOVIE_URL}")
+    private String BASEURL;
 
     public MovieInfoService(RestTemplate restTemplate, ValidationService validationService) {
         this.restTemplate = restTemplate;
@@ -31,7 +30,10 @@ public class MovieInfoService {
 
         // how will be validate imdbId?
         if (validationService.validate(imdbId)) {
-            return restTemplate.getForObject("/api/movie/" + imdbId, MovieModel.class);
+            String moviePath = BASEURL + imdbId;
+            MovieModel returnModel = restTemplate.getForObject( moviePath, MovieModel.class);
+            returnModel.setLink(moviePath);
+            return returnModel;
         }
         return null;
     }

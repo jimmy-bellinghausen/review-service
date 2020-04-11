@@ -55,7 +55,7 @@ public class ReviewServiceTest {
     public void postReview(){
         expectedReview.setUserEmail("AnEmail@email.com");
         expectedReview.setImdbId("A valid id");
-        when(repository.findAllImdbIdByUserEmail(anyString())).thenReturn(Collections.EMPTY_LIST);
+        when(repository.findAllByUserEmail(anyString())).thenReturn(Collections.EMPTY_LIST);
         when(repository.save(any(Review.class))).thenReturn(expectedReview);
         when(validationService.validate(anyString())).thenReturn(true);
         assertEquals(expectedReview, service.postReview(expectedReview));
