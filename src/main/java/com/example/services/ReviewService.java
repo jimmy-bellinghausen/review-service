@@ -4,9 +4,11 @@ import com.example.entities.Review;
 import com.example.repositories.ReviewRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class ReviewService {
     ReviewRepository repository;
     ValidationService validationService;
