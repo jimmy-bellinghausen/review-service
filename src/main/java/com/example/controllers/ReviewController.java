@@ -10,6 +10,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/review")
 public class ReviewController {
@@ -32,6 +35,17 @@ public class ReviewController {
         ReviewMovieAndRating reviewMovieRating = modelMapper.map(reviewInfo, ReviewMovieAndRating.class);
         reviewMovieRating.setMovieModel(movieModelInfo);
         return ResponseEntity.ok(reviewMovieRating);
+    }
+
+    @GetMapping("/{email}")
+    ResponseEntity<List<ReviewMovieAndRating>> responseEntity(@PathVariable String email){
+        List<Review> reviewList = reviewService.getAllByUserEmail(email);
+        List<ReviewMovieAndRating> reviewMovieAndRatingList = new ArrayList<>();
+        reviewList.forEach(review -> reviewMovieAndRatingList.add(modelMapper.map(review,ReviewMovieAndRating.class)));
+        reviewMovieAndRatingList.forEach(reviewMovieAndRating -> reviewMovieAndRating.setMovieModel(movieInfoService.getMovieInfo(reviewMovieAndRating.getImdbId())));
+
+        return ResponseEntity.ok(reviewMovieAndRatingList);
+
     }
 
 }
