@@ -68,7 +68,7 @@ public class ReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").doesNotExist())
                 .andExpect(jsonPath("$.imdbId").value(review.getImdbId()))
-                .andExpect(jsonPath("$.movieInfo").value(movieModel));
+                .andExpect(jsonPath("$.movieModel").value(movieModel));
 
 
         //create a review--

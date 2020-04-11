@@ -6,6 +6,7 @@ import com.example.models.MovieModel;
 import com.example.services.MovieInfoService;
 import com.example.services.ValidationService;
 import com.example.services.ReviewService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,8 @@ public class ReviewController {
 
     ReviewService reviewService;
     MovieInfoService movieInfoService;
+    ModelMapper modelMapper = new ModelMapper();
+
 
 
     public ReviewController(ReviewService service, MovieInfoService movieInfoService) {
@@ -26,7 +29,9 @@ public class ReviewController {
     ResponseEntity<ReviewMovieAndRating> reviewInfoDTOResponseEntity(@RequestBody Review review) {
         Review reviewInfo = reviewService.postReview(review);
         MovieModel movieModelInfo = movieInfoService.getMovieInfo(review.getImdbId());
-        return ResponseEntity.ok(reviewInfo);
+        ReviewMovieAndRating reviewMovieRating = modelMapper.map(reviewInfo, ReviewMovieAndRating.class);
+        reviewMovieRating.setMovieModel(movieModelInfo);
+        return ResponseEntity.ok(reviewMovieRating);
     }
 
 }
