@@ -26,7 +26,7 @@ public class ReviewService {
                     containsImdbId = true;
                 }
             }
-            if(containsImdbId) {
+            if(!containsImdbId) {
                 return repository.save(reviewToBeSaved);
             }
         }
