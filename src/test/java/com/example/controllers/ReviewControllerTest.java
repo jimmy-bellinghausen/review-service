@@ -1,7 +1,9 @@
 package com.example.controllers;
 
 import com.example.entities.Review;
+import com.example.entities.ReviewDetail;
 import com.example.entities.ReviewMovieAndRating;
+import com.example.entities.ReviewsForMovie;
 import com.example.models.MovieModel;
 import com.example.services.MovieInfoService;
 import com.example.services.ValidationService;
@@ -128,7 +130,7 @@ public class ReviewControllerTest {
 
         reviewMovieAndRating.setMovieModel(movieModel);
 
-        mvc.perform(get("/api/review/" + reviewJson).content(reviewJson).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/review/" + reviewJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0]").value(reviewMovieAndRating));
 
@@ -136,5 +138,45 @@ public class ReviewControllerTest {
 //        Include the movie title in the response, as well as a
 //        link to the movie details
 //        (served by the movie service)
+    }
+
+    //    Retrieve all reviews for a movie (imdb id) - response should include the movie title, and a link to the movie details (served by the movie service)
+
+
+    @Test
+    void getAllReviewsForMovie() throws Exception {
+        //return list with movieInfo at the top and each
+        // of the reviews inside of a list of that object
+        // object holding listing movie model object and a list of reviews
+        Review review1 = new Review();
+        Review review2 = new Review();
+        review1.setImdbId("foo");
+        review2.setImdbId(review1.getImdbId());
+
+        MovieModel movieModel = new MovieModel();
+        movieModel.setTitle("This movie");
+
+        List<Review> listReviews = new ArrayList<>();
+        listReviews.add(review1);
+        listReviews.add(review2);
+
+        when(reviewService.getAllByMovieId(anyString())).thenReturn(listReviews);
+        when(movieInfoService.getMovieInfo(anyString())).thenReturn(movieModel);
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        ReviewDetail reviewDetail1 = modelMapper.map(review1, ReviewDetail.class);
+        ReviewDetail reviewDetail2 = modelMapper.map(review2, ReviewDetail.class);
+        List<ReviewDetail> reviewDetails = new ArrayList<>();
+        reviewDetails.add(reviewDetail1);
+        reviewDetails.add(reviewDetail2);
+
+        //DTO that will have 1 movieInfo and a list of reviews matching that movieInfo
+
+        ReviewsForMovie reviewsForMovie = new ReviewsForMovie(movieModel, reviewDetails);
+
+        mvc.perform(get("/api/review/movie/" + review1.getImdbId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(reviewsForMovie));
     }
 }

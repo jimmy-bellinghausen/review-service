@@ -1,7 +1,9 @@
 package com.example.controllers;
 
 import com.example.entities.Review;
+import com.example.entities.ReviewDetail;
 import com.example.entities.ReviewMovieAndRating;
+import com.example.entities.ReviewsForMovie;
 import com.example.models.MovieModel;
 import com.example.services.MovieInfoService;
 import com.example.services.ValidationService;
@@ -48,4 +50,15 @@ public class ReviewController {
 
     }
 
+    @GetMapping("/movie/{imdbId}")
+    ResponseEntity<ReviewsForMovie> reviewsForMovieDTOResponseEntity(@PathVariable String imdbId){
+        List<Review> reviewList = reviewService.getAllByMovieId(imdbId);
+        List<ReviewDetail> reviewDetails = new ArrayList<>();
+        reviewList.forEach(review -> reviewDetails.add(modelMapper.map(review, ReviewDetail.class)));
+        //list of ReviewDetail and a MovieModel makes up ReviewsForMovie
+        MovieModel movieModel = movieInfoService.getMovieInfo(imdbId);
+        ReviewsForMovie reviews = new ReviewsForMovie(movieModel, reviewDetails);
+        return ResponseEntity.ok(reviews);
+    }
 }
+
