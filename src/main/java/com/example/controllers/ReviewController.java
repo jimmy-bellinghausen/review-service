@@ -1,9 +1,6 @@
 package com.example.controllers;
 
-import com.example.entities.Review;
-import com.example.entities.ReviewDetail;
-import com.example.entities.ReviewMovieAndRating;
-import com.example.entities.ReviewsForMovie;
+import com.example.entities.*;
 import com.example.models.MovieModel;
 import com.example.services.MovieInfoService;
 import com.example.services.ValidationService;
@@ -59,6 +56,14 @@ public class ReviewController {
         MovieModel movieModel = movieInfoService.getMovieInfo(imdbId);
         ReviewsForMovie reviews = new ReviewsForMovie(movieModel, reviewDetails);
         return ResponseEntity.ok(reviews);
+    }
+
+    @PatchMapping("/{id}")
+    ResponseEntity<ReviewMovieAndRating> updateReview(@PathVariable long id, @RequestBody ReviewUpdateRequest reviewUpdateRequest){
+        Review review = reviewService.updateReview(id, reviewUpdateRequest.getReview(), reviewUpdateRequest.getUserEmail());
+        ReviewMovieAndRating reviewMovieAndRating = modelMapper.map(review, ReviewMovieAndRating.class);
+        reviewMovieAndRating.setMovieModel(movieInfoService.getMovieInfo(reviewMovieAndRating.getImdbId()));
+        return ResponseEntity.ok(reviewMovieAndRating);
     }
 }
 

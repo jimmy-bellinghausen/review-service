@@ -1,9 +1,6 @@
 package com.example.controllers;
 
-import com.example.entities.Review;
-import com.example.entities.ReviewDetail;
-import com.example.entities.ReviewMovieAndRating;
-import com.example.entities.ReviewsForMovie;
+import com.example.entities.*;
 import com.example.models.MovieModel;
 import com.example.services.MovieInfoService;
 import com.example.services.ValidationService;
@@ -22,11 +19,9 @@ import org.springframework.ui.ModelMap;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,6 +33,7 @@ public class ReviewControllerTest {
     MockMvc mvc;
 
     ObjectMapper mapper = new ObjectMapper();
+    ModelMapper modelMapper = new ModelMapper();
 
     @MockBean
     ReviewService reviewService;
@@ -116,7 +112,6 @@ public class ReviewControllerTest {
 
         MovieModel movieModel = new MovieModel();
         movieModel.setTitle("Jackass 4");
-        ModelMapper modelMapper = new ModelMapper();
 
         List<Review> listReviews = new ArrayList<>();
         listReviews.add(review);
@@ -163,8 +158,6 @@ public class ReviewControllerTest {
         when(reviewService.getAllByMovieId(anyString())).thenReturn(listReviews);
         when(movieInfoService.getMovieInfo(anyString())).thenReturn(movieModel);
 
-        ModelMapper modelMapper = new ModelMapper();
-
         ReviewDetail reviewDetail1 = modelMapper.map(review1, ReviewDetail.class);
         ReviewDetail reviewDetail2 = modelMapper.map(review2, ReviewDetail.class);
         List<ReviewDetail> reviewDetails = new ArrayList<>();
@@ -179,4 +172,35 @@ public class ReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(reviewsForMovie));
     }
+
+    @Test
+    void updateStarRating() throws Exception{
+        Review updatedReview = new Review();
+        updatedReview.setId(1L);
+        updatedReview.setUserEmail("The email");
+        updatedReview.setTitle("a title");
+        updatedReview.setStarRating(Review.STARRATING.FIVE);
+        updatedReview.setText("It was perfect");
+        updatedReview.setImdbId("tt12321321321");
+
+        when(reviewService.updateReview(anyLong(), any(Review.class), anyString())).thenReturn(updatedReview);
+
+        ReviewUpdateRequest reviewUpdateRequest = new ReviewUpdateRequest(updatedReview.getUserEmail(), updatedReview);
+
+        String json = mapper.writeValueAsString(reviewUpdateRequest);
+
+        MovieModel movieModel = new MovieModel();
+        movieModel.setTitle("Movie title");
+
+        when(movieInfoService.getMovieInfo(anyString())).thenReturn(movieModel);
+
+        ReviewMovieAndRating expectedReview = modelMapper.map(updatedReview, ReviewMovieAndRating.class);
+        expectedReview.setMovieModel(movieModel);
+
+        mvc.perform(patch("/api/review/"+updatedReview.getId()).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(expectedReview));
+    }
+
+
 }
