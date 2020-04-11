@@ -202,5 +202,14 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$").value(expectedReview));
     }
 
-
+    @Test
+    void deleteReview() throws Exception{
+        long id = 1L;
+        String userEmail = "The email";
+        String json = mapper.writeValueAsString(userEmail);
+        when(reviewService.deleteReview(anyLong(), anyString())).thenReturn(true);
+        mvc.perform(delete("/api/review/"+id).content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(true));
+    }
 }

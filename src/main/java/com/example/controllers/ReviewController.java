@@ -65,5 +65,10 @@ public class ReviewController {
         reviewMovieAndRating.setMovieModel(movieInfoService.getMovieInfo(reviewMovieAndRating.getImdbId()));
         return ResponseEntity.ok(reviewMovieAndRating);
     }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Boolean> deleteReview(@PathVariable long id, @RequestBody String userEmail){
+        return ResponseEntity.ok(reviewService.deleteReview(id, userEmail));
+    }
 }
 
